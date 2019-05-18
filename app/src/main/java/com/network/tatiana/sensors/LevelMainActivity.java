@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.os.Handler;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -22,22 +24,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 public class LevelMainActivity extends AppCompatActivity implements SensorEventListener {
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
-    private static final boolean AUTO_HIDE = true;
 
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
 
-    /**
-     * Some older devices needs a small delay between UI widget updates
-     * and a change of the status and navigation bar.
-     */
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
     private View mContentView;
@@ -46,7 +34,6 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
         @Override
         public void run() {
             // Delayed removal of status and navigation bar
-
             // Note that some of these constants are new as of API 16 (Jelly Bean)
             // and API 19 (KitKat). It is safe to use them, as they are inlined
             // at compile-time and do nothing on earlier devices.
@@ -59,6 +46,7 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
         }
     };
     private View mControlsView;
+
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
         public void run() {
@@ -70,56 +58,28 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
             mControlsView.setVisibility(View.VISIBLE);
         }
     };
+
     private boolean mVisible;
     private final Runnable mHideRunnable = new Runnable() {
         @Override
         public void run() {
-            hide();
-        }
-    };
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.s
-     */
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
-            }
-            return false;
+           hide();
         }
     };
 
     private SensorManager sensorManager;
     private Sensor gyroscope;
     ImageView card_imageView;
-    boolean card_on_screen = true;
+    private  boolean card_on_screen = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_level_main);
 
         mVisible = true;
-        mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
         card_imageView = findViewById(R.id.card_imageView);
-
-        // Set up the user interaction to manually show or hide the system UI.
-        mContentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggle();
-            }
-        });
-
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
@@ -132,42 +92,15 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
         onResume();
 
 
-
     }
 
 
     @Override
     public void onSensorChanged (SensorEvent sensorEvent) {
 
-
         Sensor mySensor = sensorEvent.sensor;
 
         if (mySensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-          //  float x = sensorEvent.values[0];
-           // float y = sensorEvent.values[1];
-           // float z = sensorEvent.values[2];
-
-            //System.out.println("X = " + x);
-           // System.out.println("Y = " + y);
-          //  System.out.println("Z = " + z);
-          //  System.out.println();
-
-/*
-            if(z <= -0.5f && card_on_screen == true){
-                Animation animation = AnimationUtils.loadAnimation(this, R.anim.card_to_left_animation);
-                card_imageView.startAnimation(animation);
-                card_on_screen = false;
-            }
-            else if( z >= 0.5f && card_on_screen == true){
-                Animation animation = AnimationUtils.loadAnimation(this, R.anim.card_to_right_animation);
-                card_imageView.startAnimation(animation);
-                card_on_screen = false;
-            }
-            else if( z > -0.5f && z < 0.5f && card_on_screen == false){
-
-                card_on_screen = true;
-            }
-*/
 
             float[] rotationMatrix = new float[16];
             SensorManager.getRotationMatrixFromVector(
@@ -199,27 +132,11 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) card_imageView
                     .getLayoutParams();
             int x = layoutParams.leftMargin;
+            System.out.println("height = " + height);
             System.out.println("width = " + width);
             System.out.println("X = " + x);
             System.out.println("O = " + orientations[2]);
             card_imageView.getLayoutParams();
-/*
-            if(x >= 0 && x < width/2){
-                layoutParams.leftMargin = x - 5*(int)orientations[2];
-                card_imageView.setLayoutParams(layoutParams);
-            }else if(Math.abs(orientations[2]) < 10 && x != 0){
-                layoutParams.leftMargin = 0;
-                card_imageView.setLayoutParams(layoutParams);
-
-                if (card_on_screen) {
-                    card_imageView.setImageResource(R.drawable.background);
-                    card_on_screen = false;
-                } else {
-                    card_imageView.setImageResource(R.drawable.card);
-                    card_on_screen = true;
-                }
-            }
-            */
 
             if(Math.abs(orientations[2]) < 20 && (x < 0 || x > width/2) && x != 0) {
 
@@ -229,8 +146,7 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
                 if(card_on_screen) {
                     card_imageView.setImageResource(R.drawable.background);
                     card_on_screen = false;
-
-
+                }else{
                     card_imageView.setImageResource(R.drawable.card);
                     card_on_screen = true;
                 }
@@ -242,48 +158,6 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
                 card_imageView.setLayoutParams(layoutParams);
             }
 
-
-          /*
-            if(orientations[2] > 10){
-
-
-                    layoutParams.leftMargin = x - 5*Math.abs((int)orientations[2]);
-                   // layoutParams.rightMargin = 0;
-                   // layoutParams.bottomMargin = 0;
-                    card_imageView.setLayoutParams(layoutParams);
-
-            }else if(orientations[2] < -10) {
-
-                layoutParams.leftMargin = x + 10*Math.abs((int)orientations[2]);
-                // layoutParams.rightMargin = 0;
-                // layoutParams.bottomMargin = 0;
-                card_imageView.setLayoutParams(layoutParams);
-
-            }else if(Math.abs(orientations[2]) < 10 && (x < 0 || x > width/2)) {
-                getWindow().getDecorView().setBackgroundColor(Color.WHITE);
-
-                layoutParams.leftMargin = 0;
-                // layoutParams.rightMargin = 0;
-                // layoutParams.bottomMargin = 0;
-                card_imageView.setLayoutParams(layoutParams);
-            }
-*/
-            /*
-
-            if(orientations[2] > 20) {
-
-                Animation animation = AnimationUtils.loadAnimation(this, R.anim.card_to_left_animation);
-                card_imageView.startAnimation(animation);
-                card_on_screen = false;
-
-            } else if(orientations[2] < -20) {
-                Animation animation = AnimationUtils.loadAnimation(this, R.anim.card_to_right_animation);
-                card_imageView.startAnimation(animation);
-                card_on_screen = false;
-            } else if(Math.abs(orientations[2]) < 10) {
-                getWindow().getDecorView().setBackgroundColor(Color.WHITE);
-            }
-*/
         }
     }
 
@@ -313,46 +187,28 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
         delayedHide(100);
     }
 
-    private void toggle() {
-        if (mVisible) {
-            hide();
-        } else {
-            show();
-        }
-    }
-
     private void hide() {
         // Hide UI first
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
         }
-        mControlsView.setVisibility(View.GONE);
         mVisible = false;
 
-        // Schedule a runnable to remove the status and navigation bar after a delay
+      //   Schedule a runnable to remove the status and navigation bar after a delay
         mHideHandler.removeCallbacks(mShowPart2Runnable);
         mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
-    }
-
-    @SuppressLint("InlinedApi")
-    private void show() {
-        // Show the system bar
-        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        mVisible = true;
-
-        // Schedule a runnable to display UI elements after a delay
-        mHideHandler.removeCallbacks(mHidePart2Runnable);
-        mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
     }
 
     /**
      * Schedules a call to hide() in delay milliseconds, canceling any
      * previously scheduled calls.
      */
+
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
+
+
 }
