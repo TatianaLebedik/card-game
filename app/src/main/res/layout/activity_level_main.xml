@@ -5,7 +5,6 @@
              android:layout_height="match_parent"
              android:background="@drawable/background"
              tools:context=".LevelMainActivity">
-
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
@@ -30,7 +29,7 @@
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/card"
                 android:id="@+id/card_imageView"
-                android:layout_margin="60dp"/>
+                android:layout_marginTop="20dp" android:layout_marginBottom="20dp"/>
         <LinearLayout android:id="@+id/fullscreen_content_controls"
                       style="?metaButtonBarStyle"
                       android:layout_width="match_parent"

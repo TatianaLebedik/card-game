@@ -2,6 +2,8 @@ package com.network.tatiana.sensors;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -10,11 +12,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 public class LevelMainActivity extends AppCompatActivity implements SensorEventListener {
     /**
@@ -119,7 +124,8 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         try {
-            gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+            gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         }catch(NullPointerException e){
             System.out.println(e);
         }
@@ -136,10 +142,10 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
 
         Sensor mySensor = sensorEvent.sensor;
 
-        if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
-            float x = sensorEvent.values[0];
-            float y = sensorEvent.values[1];
-            float z = sensorEvent.values[2];
+        if (mySensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+          //  float x = sensorEvent.values[0];
+           // float y = sensorEvent.values[1];
+           // float z = sensorEvent.values[2];
 
             //System.out.println("X = " + x);
            // System.out.println("Y = " + y);
@@ -161,7 +167,123 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
 
                 card_on_screen = true;
             }
-    */
+*/
+
+            float[] rotationMatrix = new float[16];
+            SensorManager.getRotationMatrixFromVector(
+                    rotationMatrix, sensorEvent.values);
+            // Remap coordinate system
+            float[] remappedRotationMatrix = new float[16];
+            SensorManager.remapCoordinateSystem(rotationMatrix,
+                    SensorManager.AXIS_Z,
+                    SensorManager.AXIS_X,
+                    remappedRotationMatrix);
+
+// Convert to orientations
+            float[] orientations = new float[3];
+            SensorManager.getOrientation(remappedRotationMatrix, orientations);
+
+
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int width = size.x;
+            int height = size.y;
+
+
+            for(int i = 0; i < 3; i++) {
+                orientations[i] = (float)(Math.toDegrees(orientations[i]));
+            }
+
+
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) card_imageView
+                    .getLayoutParams();
+            int x = layoutParams.leftMargin;
+            System.out.println("width = " + width);
+            System.out.println("X = " + x);
+            System.out.println("O = " + orientations[2]);
+            card_imageView.getLayoutParams();
+/*
+            if(x >= 0 && x < width/2){
+                layoutParams.leftMargin = x - 5*(int)orientations[2];
+                card_imageView.setLayoutParams(layoutParams);
+            }else if(Math.abs(orientations[2]) < 10 && x != 0){
+                layoutParams.leftMargin = 0;
+                card_imageView.setLayoutParams(layoutParams);
+
+                if (card_on_screen) {
+                    card_imageView.setImageResource(R.drawable.background);
+                    card_on_screen = false;
+                } else {
+                    card_imageView.setImageResource(R.drawable.card);
+                    card_on_screen = true;
+                }
+            }
+            */
+
+            if(Math.abs(orientations[2]) < 20 && (x < 0 || x > width/2) && x != 0) {
+
+                layoutParams.leftMargin = 0;
+                card_imageView.setLayoutParams(layoutParams);
+
+                if(card_on_screen) {
+                    card_imageView.setImageResource(R.drawable.background);
+                    card_on_screen = false;
+
+
+                    card_imageView.setImageResource(R.drawable.card);
+                    card_on_screen = true;
+                }
+            }
+            else if(Math.abs(orientations[2]) > 20 ){
+                layoutParams.leftMargin = x - 5*(int)orientations[2];
+                // layoutParams.rightMargin = 0;
+                // layoutParams.bottomMargin = 0;
+                card_imageView.setLayoutParams(layoutParams);
+            }
+
+
+          /*
+            if(orientations[2] > 10){
+
+
+                    layoutParams.leftMargin = x - 5*Math.abs((int)orientations[2]);
+                   // layoutParams.rightMargin = 0;
+                   // layoutParams.bottomMargin = 0;
+                    card_imageView.setLayoutParams(layoutParams);
+
+            }else if(orientations[2] < -10) {
+
+                layoutParams.leftMargin = x + 10*Math.abs((int)orientations[2]);
+                // layoutParams.rightMargin = 0;
+                // layoutParams.bottomMargin = 0;
+                card_imageView.setLayoutParams(layoutParams);
+
+            }else if(Math.abs(orientations[2]) < 10 && (x < 0 || x > width/2)) {
+                getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+
+                layoutParams.leftMargin = 0;
+                // layoutParams.rightMargin = 0;
+                // layoutParams.bottomMargin = 0;
+                card_imageView.setLayoutParams(layoutParams);
+            }
+*/
+            /*
+
+            if(orientations[2] > 20) {
+
+                Animation animation = AnimationUtils.loadAnimation(this, R.anim.card_to_left_animation);
+                card_imageView.startAnimation(animation);
+                card_on_screen = false;
+
+            } else if(orientations[2] < -20) {
+                Animation animation = AnimationUtils.loadAnimation(this, R.anim.card_to_right_animation);
+                card_imageView.startAnimation(animation);
+                card_on_screen = false;
+            } else if(Math.abs(orientations[2]) < 10) {
+                getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+            }
+*/
         }
     }
 

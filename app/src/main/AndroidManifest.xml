@@ -18,15 +18,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".LevelsTreeActivity"
-                  android:screenOrientation="portrait">
+                  android:screenOrientation="landscape">
         </activity>
         <activity android:name=".LevelActivity"
-                  android:screenOrientation="portrait">
+                  android:screenOrientation="landscape">
         </activity>
         <activity
                 android:name=".LevelMainActivity"
                 android:configChanges="orientation|keyboardHidden|screenSize"
-                android:screenOrientation="portrait"
+                android:screenOrientation="landscape"
                 android:label="@string/title_activity_level_main"
                 android:theme="@style/FullscreenTheme">
         </activity>
