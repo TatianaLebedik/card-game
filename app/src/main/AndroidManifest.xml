@@ -9,26 +9,27 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
-                  android:screenOrientation="portrait">
+        <activity
+                android:name=".MainActivity"
+                android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".LevelsTreeActivity"
-                  android:screenOrientation="landscape">
-        </activity>
-        <activity android:name=".LevelActivity"
-                  android:screenOrientation="landscape">
+        <activity
+                android:name=".LevelsTreeActivity"
+                android:screenOrientation="landscape">
         </activity>
         <activity
                 android:name=".LevelMainActivity"
                 android:configChanges="orientation|keyboardHidden|screenSize"
-                android:screenOrientation="landscape"
                 android:label="@string/title_activity_level_main"
+                android:screenOrientation="landscape"
                 android:theme="@style/FullscreenTheme">
+        </activity>
+        <activity android:name=".ScoreActivity">
         </activity>
     </application>
 
