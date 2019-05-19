@@ -26,11 +26,8 @@ public class LevelsTreeActivity extends AppCompatActivity {
     }
 
     public void on_level_1_button_click(View view){
-        //Intent intent = new Intent(LevelsTreeActivity.this, LevelActivity.class);
-        //intent.putExtra("sublevel", 0);
-        //startActivity(intent);
+
         Intent intent = new Intent(LevelsTreeActivity.this, LevelMainActivity.class);
-        //intent.putExtra("sublevel", 0);
         startActivity(intent);
 
     }

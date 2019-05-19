@@ -8,7 +8,13 @@ public class Card {
     private int answResId;
 
     Card(Context context, String way, int id){
-            this.true_way = way;
+
+            if(way.contains("left")) {
+                this.true_way = "left";
+            }
+            else{
+                this.true_way = "right";
+            }
 
             cardResId = context.getResources().getIdentifier(
                      way + "card" + id, "drawable", context.getPackageName());

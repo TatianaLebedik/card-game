@@ -2,6 +2,7 @@ package com.network.tatiana.sensors;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -37,12 +38,12 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
             // Note that some of these constants are new as of API 16 (Jelly Bean)
             // and API 19 (KitKat). It is safe to use them, as they are inlined
             // at compile-time and do nothing on earlier devices.
-//            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-//                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+           mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
     private View mControlsView;
@@ -71,10 +72,10 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
     private SensorManager sensorManager;
     private Sensor gyroscope;
     ImageView card_imageView;
-   // private  boolean card_on_screen = true;
-
-    CardsStack cardsStack;
-
+    private int level = 1;
+    private boolean start = true;
+    private CardsStack cardsStack;
+    private Card card = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,19 +87,17 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
         displayWidth = size.x;
 
         mVisible = true;
-       // mContentView = findViewById(R.id.fullscreen_content);
+        mContentView = findViewById(R.id.frameLayoutFull);
         card_imageView = findViewById(R.id.card_imageView);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        cardsStack  = new CardsStack(this,1);
+        cardsStack  = new CardsStack(this,level);
         try {
 
             gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         }catch(NullPointerException e){
             System.out.println(e);
         }
-
-        cardsStack.getCard();
 
         onResume();
 
@@ -135,27 +134,61 @@ public class LevelMainActivity extends AppCompatActivity implements SensorEventL
             card_imageView.getLayoutParams();
 
 
-            Card card = null;
             if(Math.abs(orientations[2]) < 20 && (x < 0 || x > displayWidth/2) && x != 0) {
 
-                 layoutParams.leftMargin = 0;
-                 card_imageView.setLayoutParams(layoutParams);
-                 card = cardsStack.getCard();
+                if(start){
+                    start = false;
+                    card = cardsStack.getCard();
+                    card_imageView.setImageResource(card.getCardResId());
+                    System.out.println("ID:" + card.getCardResId());
+                    layoutParams.leftMargin = 0;
+                    card_imageView.setLayoutParams(layoutParams);
+                }else {
 
-                 if(card != null){
-                       System.out.println("ID:" + card.getCardResId());
-                     card_imageView.setImageResource(card.getCardResId());
-                 }else{
-                        System.out.println("Huston, we have a problem...");
-                 }
+                    //if (card == null) {
 
+                    if ((x < 0 && card.getTrue_way().equals("right")) || (x > displayWidth / 2 && card.getTrue_way().equals("left"))) {
+                        System.out.println("Wrong " + x);
+                        Intent intent = new Intent(LevelMainActivity.this, ScoreActivity.class);
+                        intent.putExtra("img", Integer.toString(card.getAnswResId()));
+                        intent.putExtra("level", Integer.toString(level));
+                        startActivity(intent);
+                    } else {
+                        card = cardsStack.getCard();
+                        if (card == null) {
+                            System.out.println("Huston, we have a problem...");
+
+                        Intent intent = new Intent(LevelMainActivity.this, ScoreActivity.class);
+                        int img = getResources().getIdentifier("card", "drawable", getPackageName());
+                        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE:" + img);
+                        intent.putExtra("img", Integer.toString(img));
+                        intent.putExtra("level", Integer.toString(level));
+                        startActivity(intent);
+
+                        } else {
+                            System.out.println("ID:" + card.getCardResId());
+                            card_imageView.setImageResource(card.getCardResId());
+                            System.out.println("New card");
+                            layoutParams.leftMargin = 0;
+                            card_imageView.setLayoutParams(layoutParams);
+                        }
+                    }
+
+                    //} else {
+                    //   System.out.println("Huston, we have a problem...");
+//
+//                        Intent intent = new Intent(LevelMainActivity.this, ScoreActivity.class);
+//                        int img = getResources().getIdentifier("card", "drawable", getPackageName());
+//                        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE:" + img);
+//                        intent.putExtra("img", Integer.toString(img));
+//                        intent.putExtra("level", level);
+//                        startActivity(intent);
+                    // }
+                }
             }
-            else if(Math.abs(orientations[2]) > 20 ){
+            else if(Math.abs(orientations[2]) > 20){
                 layoutParams.leftMargin = x - 5*(int)orientations[2];
                 card_imageView.setLayoutParams(layoutParams);
-                if(x < 0 && card.getTrue_way() != "left") {
-
-                }
 
             }
 
