@@ -5,13 +5,40 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/main_background"
         tools:context=".ScoreActivity" android:id="@+id/tableLayout">
 
     <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" app:srcCompat="@mipmap/ic_launcher" android:id="@+id/imageView"/>
+            android:layout_height="match_parent" android:layout_weight="1" android:layout_gravity="center">
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:layout_weight="1">
+            <Button
+                    android:text="Try Again"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/button"
+                    android:layout_weight="1"
+                    android:onClick="on_try_again_button_click"
+                    android:layout_gravity="center" android:layout_marginBottom="80dp"
+                    android:layout_marginLeft="40dp" android:layout_marginRight="40dp" android:layout_marginTop="80dp"/>
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@mipmap/ic_launcher"
+                    android:id="@+id/imageView"
+                    android:layout_weight="1"/>
+            <Button
+                    android:text="to levels"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/button2"
+                    android:layout_weight="1"
+                    android:onClick="on_levels_button_click"
+                    android:layout_marginTop="80dp" android:layout_marginBottom="80dp"
+                    android:layout_marginLeft="40dp" android:layout_marginRight="40dp"/>
+        </LinearLayout>
     </TableRow>
 </TableLayout>

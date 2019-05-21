@@ -1,42 +1,39 @@
 package com.network.tatiana.sensors;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     Button start_button;
-    EditText name_textEdit;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        start_button = findViewById(R.id.start_button);
-        name_textEdit = findViewById(R.id.name_editText);
+        View overlay = findViewById(R.id.tableLayout);
+        overlay.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_FULLSCREEN);
 
-        if(getIntent().getStringExtra("name") != null) {
-            name_textEdit.setText(getIntent().getStringExtra("name"));
+        start_button = findViewById(R.id.start_button);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
         }
-        System.out.println("MAIN ACTIVITY START");
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     public void on_start_button_click(View view){
-
-        String name = name_textEdit.getText().toString();
-        System.out.println("button clicked");
-        System.out.println(name);
-
-        //TODO: connect to DB and check name
-
         Intent intent = new Intent(MainActivity.this, LevelsTreeActivity.class);
-        intent.putExtra("name", name);
         startActivity(intent);
-
-
     }
 }

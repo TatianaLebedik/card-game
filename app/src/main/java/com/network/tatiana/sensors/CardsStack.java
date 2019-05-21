@@ -17,10 +17,10 @@ public class CardsStack {
         this.level = level;
         this.context = context;
         cardList = new ArrayList<>();
-        for(int i = 0; i < 2; i++){
+        for(int i = 0; i < 5; i++){
             cardList.add(new Card(context, "level"+ level + "_left_", i));
         }
-        for(int i = 0; i < 3; i++){
+        for(int i = 0; i < 5; i++){
             cardList.add(new Card(context, "level"+ level + "_right_", i));
         }
         randomGenerator = new Random();

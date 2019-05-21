@@ -4,7 +4,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="@drawable/background"
-             tools:context=".LevelMainActivity" android:id="@+id/frameLayoutFull">
+             tools:context=".LevelMainActivity" android:id="@+id/frameLayout">
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
@@ -18,7 +18,7 @@
         <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/card"
+                app:srcCompat="@drawable/level1_task"
                 android:id="@+id/card_imageView"
                 android:layout_marginBottom="30dp" android:layout_marginTop="30dp"/>
     </FrameLayout>

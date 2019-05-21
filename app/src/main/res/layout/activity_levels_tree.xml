@@ -5,44 +5,39 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".LevelsTreeActivity">
+        tools:context=".LevelsTreeActivity"
+        android:background="@drawable/main_background"
+        android:id="@+id/tableLayout">
 
     <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent" android:layout_margin="20dp" android:layout_weight="0.1">
         <Button
-                android:text="Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/previous_button"
-                android:onClick="on_previous_button_click"/>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/level_1_button"
+                android:background="@drawable/level1_button"
+                android:onClick="on_level_1_button_click" android:layout_weight="0.3"
+                android:textColor="@android:color/white"/>
     </TableRow>
     <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <ScrollView
+            android:layout_height="match_parent" android:layout_margin="20dp" android:layout_weight="0.1">
+        <Button
+                android:text="Coming Soon"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="vertical">
-                <Button
-                        android:text="Button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/level_1_button"
-                        android:onClick="on_level_1_button_click"/>
-                <Button
-                        android:text="Button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/level_2_button"/>
-                <Button
-                        android:text="Button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/level_3_button"/>
-            </LinearLayout>
-        </ScrollView>
+                android:layout_height="match_parent"
+                android:background="@drawable/level2_button"
+                android:id="@+id/level_2_button" android:layout_weight="1"/>
+    </TableRow>
+    <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:layout_weight="0.1">
+        <Button
+                android:text="Coming soon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/level3_button"
+                android:id="@+id/level_3_button" android:layout_weight="1" android:layout_margin="20dp"/>
     </TableRow>
 </TableLayout>
